@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contagem regressiva — Campanhas Eleitorais 2026</title>
+<meta name="description" content="Contagem regressiva para o início das campanhas eleitorais em 15/08/2026." />
+<meta property="og:title" content="Contagem regressiva — Campanhas Eleitorais 2026" />
+<meta property="og:description" content="Contagem regressiva para o início das campanhas eleitorais em 15/08/2026." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fundo sólido transicionando entre tons pastéis:
+     vermelho -> verde -> azul -> verde -> amarelo */
+  @keyframes bg-cycle {
+    0%   { background-color: #f4a6a6; }
+    20%  { background-color: #aee5b0; }
+    40%  { background-color: #a6c8f4; }
+    60%  { background-color: #b8e6bb; }
+    80%  { background-color: #f4e79a; }
+    100% { background-color: #f4a6a6; }
+  }
+
+  .bg-cycle {
+    animation: bg-cycle 30s ease-in-out infinite;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3vw 4vw;
+  }
+
+  .badge {
+    font-size: clamp(1.2rem, 1.6vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .title {
+    font-size: clamp(2.2rem, 5vw, 6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-top: 0.5rem;
+  }
+
+  .flip-title {
+    font-size: clamp(3rem, 8vw, 10rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 1rem;
+  }
+
+  .sub {
+    font-size: clamp(1.1rem, 1.8vw, 2.4rem);
+    font-weight: 500;
+    margin-top: 1rem;
+    opacity: 0.9;
+  }
+
+  .countdown {
+    margin-top: 4vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2.5vw;
+  }
+
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .num {
+    font-size: clamp(4rem, 14vw, 18rem);
+    font-weight: 900;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sep {
+    font-size: clamp(4rem, 14vw, 18rem);
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .unit-label {
+    margin-top: 0.6rem;
+    font-size: clamp(1rem, 1.6vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    opacity: 0.85;
+  }
+
+  .countdown-tiny {
+    margin-top: 3vh;
+    font-size: clamp(0.9rem, 1.4vw, 1.6rem);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    opacity: 0.65;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-cycle" id="app">
+    <!-- preenchido por JS -->
+  </div>
+
+  <script>
+    // Alvo: 15/08/2026 às 00:01
+    const TARGET = new Date("2026-08-15T00:01:00").getTime();
+
+    const pad = (n) => String(n).padStart(2, "0");
+
+    function getRemaining() {
+      const diff = Math.max(0, TARGET - Date.now());
+      return {
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        minutes: Math.floor((diff % 3600000) / 60000),
+        seconds: Math.floor((diff % 60000) / 1000),
+        done: diff === 0,
+      };
+    }
+
+    function unit(value, label) {
+      return `<div class="unit"><div class="num">${pad(value)}</div><div class="unit-label">${label}</div></div>`;
+    }
+    const sep = () => `<div class="sep">:</div>`;
+
+    function render() {
+      const r = getRemaining();
+      const app = document.getElementById("app");
+      if (r.done) {
+        app.innerHTML = `
+          <p class="badge">Dia da Virada</p>
+          <h1 class="flip-title">Chegou o dia!</h1>
+          <p class="sub">15/08/2026 às 00:01 — início das campanhas eleitorais</p>`;
+        return;
+      }
+      app.innerHTML = `
+        <p class="badge">Dia da Virada</p>
+        <h1 class="title">Início das campanhas eleitorais</h1>
+        <p class="sub">Começa em 15/08/2026 às 00:01hs</p>
+        <div class="countdown">
+          ${unit(r.days, "Dias")}
+          ${sep()}
+          ${unit(r.hours, "Horas")}
+          ${sep()}
+          ${unit(r.minutes, "Min")}
+          ${sep()}
+          ${unit(r.seconds, "Seg")}
+        </div>
+        <div class="countdown-tiny">DD&nbsp;&nbsp;HH:MM:SS</div>`;
+    }
+
+    render();
+    setInterval(render, 1000);
+  </script>
+</body>
+</html>
